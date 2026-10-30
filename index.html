@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Curriculum to BSc Urban Planning - Interactive Mapping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2d3561 0%, #3e4a7d 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .intro-section {
+            background: #f8f9fa;
+            padding: 30px 40px;
+            border-bottom: 3px solid #e9ecef;
+        }
+        
+        .intro-section h2 {
+            color: #2d3561;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        
+        .intro-section p {
+            color: #495057;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 1.05em;
+        }
+        
+        .intro-section a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .intro-section a:hover {
+            text-decoration: underline;
+        }
+        
+        .plo-details {
+            margin: 20px 0;
+        }
+
+        .plo-details > summary {
+            cursor: pointer;
+            list-style: none;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            font-weight: 600;
+            color: #2d3561;
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .plo-details > summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .plo-details > summary:hover {
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .plo-details > summary::after {
+            content: '▼';
+            color: #667eea;
+            font-size: 0.85em;
+            transition: transform 0.3s;
+        }
+
+        .plo-details[open] > summary::after {
+            transform: rotate(180deg);
+        }
+
+        .plo-list {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0 0 0;
+        }
+        
+        .plo-item {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .plo-item strong {
+            color: #2d3561;
+        }
+        
+        .plo-item .plo-pathway {
+            color: #157347;
+            font-weight: 600;
+        }
+        
+        .how-to-section {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .how-to-section h3 {
+            color: #2d3561;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .how-to-section ul {
+            margin-left: 20px;
+            color: #495057;
+            line-height: 1.8;
+        }
+        
+        .how-to-section li {
+            margin-bottom: 8px;
+        }
+        
+        .example-group {
+            margin-bottom: 15px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 3px solid #e9ecef;
+        }
+        
+        .stat-box {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        .controls {
+            padding: 30px 40px;
+            background: #ffffff;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3561;
+            font-size: 1.05em;
+        }
+        
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .btn-reset {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-reset:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        
+        .content-area {
+            padding: 40px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .toggle-btn {
+            padding: 12px 30px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .toggle-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        #mappingsContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        #mappingsContainer .no-results {
+            grid-column: 1 / -1;
+        }
+
+        .start-prompt {
+            background: #f8f9fa;
+            border: 2px dashed #c3ccf5;
+            border-radius: 12px;
+        }
+
+        .start-prompt h2 {
+            color: #2d3561;
+        }
+
+        .mapping-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 0;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mapping-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .mapping-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+        
+        .plo-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+        
+        .plo-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3561;
+            flex: 1;
+        }
+        
+        .subject-badge {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 6px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .programme-text {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #495057;
+            border-left: 4px solid #667eea;
+        }
+        
+        .rationale-text {
+            background: #fff9e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            line-height: 1.6;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .career-badge {
+            background: #d4edda;
+            color: #155724;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #2d3561;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .results-count {
+            background: #e7f3ff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+            color: #0066cc;
+        }
+        
+        /* Visual View Styles */
+        .visual-view {
+            display: none;
+        }
+        
+        .visual-view.active {
+            display: block;
+        }
+        
+        .plo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .plo-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .plo-box::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+        
+        .plo-box:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .plo-box h3 {
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .plo-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        
+        .plo-box .count {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .plo-box .subjects-list {
+            font-size: 0.85em;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .legend {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .legend h3 {
+            color: #2d3561;
+            margin-bottom: 15px;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        /* Connection Wheel */
+        .wheel-instructions {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .wheel-instructions h3 {
+            color: #2d3561;
+            margin-bottom: 10px;
+        }
+        
+        .wheel-instructions p {
+            color: #495057;
+            line-height: 1.7;
+        }
+        
+        .gold-key {
+            color: #c8860a;
+            font-weight: 700;
+        }
+        
+        .wheel-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        
+        .wheel-col-ring {
+            flex: 1 1 360px;
+            min-width: 300px;
+        }
+        
+        .wheel-col-panel {
+            flex: 1 1 300px;
+            min-width: 280px;
+        }
+        
+        .wheel-wrap {
+            position: relative;
+            max-width: 560px;
+            margin: 0;
+        }
+        
+        #wheelSvg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .zoom-controls {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+        }
+        
+        .zoom-controls button {
+            width: 38px;
+            height: 38px;
+            border: 2px solid #667eea;
+            background: #fff;
+            color: #667eea;
+            border-radius: 8px;
+            font-size: 1.15em;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+        
+        .zoom-controls button:hover {
+            background: #667eea;
+            color: #fff;
+        }
+        
+        .zoom-label {
+            font-size: 0.8em;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        
+        .wheel-jump {
+            margin-bottom: 22px;
+        }
+        
+        .wheel-jump label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3561;
+            font-size: 1.05em;
+        }
+        
+        .wheel-jump select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+        
+        .wheel-jump select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .wheel-seg {
+            cursor: pointer;
+            transition: opacity 0.25s, fill 0.25s;
+        }
+        
+        .wheel-seg:hover {
+            opacity: 0.85;
+        }
+        
+        .wheel-seg.seg-dim {
+            opacity: 0.15;
+        }
+        
+        .wheel-label {
+            font-size: 11px;
+            fill: #ffffff;
+            font-weight: 600;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        
+        .wheel-label.plo {
+            font-size: 12.5px;
+        }
+        
+        .wheel-label.label-dim {
+            opacity: 0.12;
+        }
+        
+        .wheel-line {
+            stroke: #f0a500;
+            stroke-width: 1.6;
+            fill: none;
+            opacity: 0.75;
+            pointer-events: none;
+        }
+        
+        .wheel-center-text {
+            fill: #2d3561;
+            font-weight: 700;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        
+        .wheel-center-sub {
+            fill: #6c757d;
+            font-weight: 500;
+            text-anchor: middle;
+            pointer-events: none;
+        }
+        
+        .wheel-info {
+            margin-top: 26px;
+            min-height: 40px;
+        }
+        
+        .wheel-info .wi-title {
+            font-weight: 700;
+            color: #2d3561;
+            font-size: 1.1em;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+        
+        .wheel-info .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .wheel-info .chip {
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+        
+        .wheel-info .chip-subject {
+            background: #e7f3ff;
+            color: #0066cc;
+        }
+        
+        .wheel-info .chip-plo {
+            background: #efeafc;
+            color: #5b3fae;
+        }
+        
+        .wheel-info .wi-hint {
+            text-align: center;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.5em;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .plo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .expand-icon {
+            cursor: pointer;
+            float: right;
+            font-size: 1.2em;
+            color: #667eea;
+            transition: transform 0.3s;
+        }
+        
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+        
+        .card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .card-details.expanded {
+            max-height: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎓 School Curriculum → BSc Urban Planning</h1>
+            <p>Interactive Mapping of Programme Learning Outcomes</p>
+        </header>
+        
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-number">55</div>
+                <div class="stat-label">Total Mappings</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Learning Outcomes</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">17</div>
+                <div class="stat-label">School Subjects</div>
+            </div>
+        </div>
+        
+        <div class="intro-section">
+            <p>This interactive visualisation allows you to explore how the subjects you study at school links on to the BSc Urban Planning at UWE Bristol, and what further career pathways it leads you on to.</p>
+            
+            <p>The curriculum on the BSc Urban Planning programme (<a href="https://courses.uwe.ac.uk/K401/urban-planning" target="_blank">https://courses.uwe.ac.uk/K401/urban-planning</a>) is guided by the following PLOs (Programme Learning Outcomes) – similar to Programme of Study and Attainment Targets in Secondary Schools.</p>
+            
+            <details class="plo-details">
+                <summary>View the 10 Programme Learning Outcomes (PLOs)</summary>
+            <div class="plo-list">
+                <div class="plo-item"><strong>PLO 1 Understand Planning</strong> <span class="plo-pathway">(Pathway 1 – Planning for healthy environments)</span> - Explain land use planning processes and enabling sustainable development using core planning competencies as well as drawing on relevant planning theory.</div>
+                
+                <div class="plo-item"><strong>PLO 2 Global and Local Change</strong> <span class="plo-pathway">(Pathway 2 – Biodiversity and energy management)</span> - Recognise and respond to local and global challenges, demonstrating critical thinking.</div>
+                
+                <div class="plo-item"><strong>PLO 3 Systems thinking</strong> <span class="plo-pathway">(Pathway 3 – Planning for connected urban/rural communities)</span> - Demonstrate the ability to apply systems thinking at different spatial scales extending to both urban and rural areas.</div>
+                
+                <div class="plo-item"><strong>PLO 4 Inequality and Positive Change</strong> <span class="plo-pathway">(Pathway 4 – Urban regeneration and masterplanning)</span> - Define, analyse and address economic, social, political, environmental and health inequalities.</div>
+                
+                <div class="plo-item"><strong>PLO 5 Risk Management</strong> <span class="plo-pathway">(Pathway 5 – Protecting our historic places)</span> - Evaluate environmental and economic risks, awareness of viability and the need to balance different agendas.</div>
+                
+                <div class="plo-item"><strong>PLO 6 Legal and Institutional Frameworks</strong> <span class="plo-pathway">(Pathway 6 – Project management)</span> - Explain land use planning in various legal contexts and analyse economic, social, political, environmental and health data effectively.</div>
+                
+                <div class="plo-item"><strong>PLO 7 Community Engagement</strong> <span class="plo-pathway">(Pathway 7 – Engaged communities, changing places)</span> - Evaluate community engagement's importance and respond to technological changes in interdisciplinary environments.</div>
+                
+                <div class="plo-item"><strong>PLO 8 Evidence and Research</strong> <span class="plo-pathway">(Pathway 8 – Smart cities and open data)</span> - Judge evidence quality, use digital tools and modelling techniques to find solutions for complex problems.</div>
+                
+                <div class="plo-item"><strong>PLO 9 Design and Aesthetics</strong> <span class="plo-pathway">(Pathway 9 – Designing high quality places)</span> - Apply design principles to create high-quality places, considering long-term impacts on people and the planet.</div>
+                
+                <div class="plo-item"><strong>PLO 10 Professional Competencies and Standards</strong> <span class="plo-pathway">(Pathway 10 – Reflective practitioner)</span> - Demonstrate communication, negotiation, and leadership skills whilst upholding ethical behaviour.</div>
+            </div>
+            </details>
+            
+            <div class="how-to-section">
+                <h3>How to use this interactive visualisation:</h3>
+                <p>For instance, you can:</p>
+                <div class="example-group">
+                    <ul>
+                        <li>Select "Geography A" from the first dropdown</li>
+                        <li>See all 4 career pathways Geography supports</li>
+                        <li>Then filter by a specific pathway like "Smart cities and open data" to show the connection</li>
+                    </ul>
+                </div>
+                <p>Or if you are interested in "Designing high quality places" you can:</p>
+                <div class="example-group">
+                    <ul>
+                        <li>Select that career pathway</li>
+                        <li>See that subjects like Art and Design, Design and Technology, Mathematics all contribute</li>
+                        <li>Understand that PLO 9 (Design and Aesthetics) is the learning outcome linking them</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="filter-row">
+                <div class="control-group">
+                    <label for="filterSubject">📚 Filter by School Subject</label>
+                    <select id="filterSubject">
+                        <option value="">All Subjects</option>
+                        <option value="Citizenship">Citizenship</option>
+                        <option value="Geography A">Geography A</option>
+                        <option value="Geography B">Geography B</option>
+                        <option value="Science">Science</option>
+                        <option value="Design and Technology A">Design and Technology A</option>
+                        <option value="Design and Technology B">Design and Technology B</option>
+                        <option value="Economics">Economics</option>
+                        <option value="Environmental Science">Environmental Science</option>
+                        <option value="Politics">Politics</option>
+                        <option value="English">English</option>
+                        <option value="Computing">Computing</option>
+                        <option value="Art and Design">Art and Design</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Business Studies">Business Studies</option>
+                        <option value="Philosophy">Philosophy</option>
+                        <option value="History">History</option>
+                        <option value="Psychology">Psychology</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label for="filterCareer">🎯 Filter by Career Pathway</label>
+                    <select id="filterCareer">
+                        <option value="">All Career Pathways</option>
+                        <option value="Pathway 1 – Planning for healthy environments">Pathway 1 – Planning for healthy environments</option>
+                        <option value="Pathway 2 - Biodiversity and energy management">Pathway 2 – Biodiversity and energy management</option>
+                        <option value="Pathways 3 – Planning for connected urban/rural communities">Pathway 3 – Planning for connected urban/rural communities</option>
+                        <option value="Pathway 4 – Urban regeneration and masterplanning">Pathway 4 – Urban regeneration and masterplanning</option>
+                        <option value="Pathway 5 – Protecting our historic places">Pathway 5 – Protecting our historic places</option>
+                        <option value="Pathways 6 – Project management">Pathway 6 – Project management</option>
+                        <option value="Pathway 7 – Engaged communities, changing places">Pathway 7 – Engaged communities, changing places</option>
+                        <option value="Pathway 8 – Smart cities and open data">Pathway 8 – Smart cities and open data</option>
+                        <option value="Pathway 9 – Designing high quality places">Pathway 9 – Designing high quality places</option>
+                        <option value="Pathway 10 – Reflective practitioner">Pathway 10 – Reflective practitioner</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn-reset" onclick="resetFilters()">🔄 Reset All Filters</button>
+        </div>
+        
+        <div class="content-area">
+            <div class="view-toggle">
+                <button class="toggle-btn active" onclick="switchView('cards')">📋 Card View</button>
+                <button class="toggle-btn" onclick="switchView('visual')">📊 Visual Overview</button>
+            </div>
+            
+            <div id="cardsView" class="cards-view">
+                <div class="results-count" id="resultsCount">Showing all 55 mappings</div>
+                <div id="mappingsContainer"></div>
+            </div>
+            
+            <div id="visualView" class="visual-view">
+                <div class="wheel-layout">
+                    <div class="wheel-col-ring">
+                        <div class="wheel-wrap">
+                            <div class="zoom-controls">
+                                <button type="button" onclick="zoomIn()" aria-label="Zoom in" title="Zoom in">＋</button>
+                                <button type="button" onclick="zoomOut()" aria-label="Zoom out" title="Zoom out">－</button>
+                                <button type="button" onclick="zoomReset()" aria-label="Reset zoom" title="Reset zoom">⟲</button>
+                                <span id="zoomLabel" class="zoom-label">100%</span>
+                            </div>
+                            <svg id="wheelSvg" viewBox="0 0 680 680" role="img" aria-label="Interactive connection wheel linking school subjects and programme learning outcomes"></svg>
+                        </div>
+                    </div>
+                    <div class="wheel-col-panel">
+                        <div class="wheel-instructions">
+                            <h3>🎯 Connection Wheel</h3>
+                            <p>The <strong>inner ring</strong> is the 17 school subjects; the <strong>outer ring</strong> is the 10 Programme Learning Outcomes. Click a segment — or pick one below — to highlight what it links to. Connected segments turn <span class="gold-key">gold</span>. Click the centre to clear.</p>
+                        </div>
+                        <div class="wheel-jump">
+                            <label for="wheelSelect">Jump to a learning outcome or subject</label>
+                            <select id="wheelSelect" onchange="wheelSelectChange(this.value)">
+                                <option value="">Choose…</option>
+                            </select>
+                        </div>
+                        <div id="wheelInfo" class="wheel-info"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mappingsData = [
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Citizenship", "programme": "The different ways in which a citizen can contribute to the improvement of his or her community, to include the opportunity to participate actively in community volunteering, as well as other forms of responsible activity (KS4)", "rationale": "Community participation and democratic processes align with understanding planning systems", "career": "Pathway 1 – Planning for healthy environments"},
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Citizenship", "programme": "Different ways a citizen can contribute to the improvement of his/her community; how public money is raised and spent", "rationale": "Understanding civic processes and public resources relates to land use planning", "career": "Pathway 1 – Planning for healthy environments"},
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Citizenship", "programme": "Understanding of system of democratic government, role of citizens in cities, skills to think critically and debate political questions (KS3)", "rationale": "Democratic systems and citizen roles in cities directly support understanding planning processes", "career": "Pathway 1 – Planning for healthy environments"},
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Geography A", "programme": "Human geography relating to: population and urbanisation (KS3)", "rationale": "Population and urbanisation are core elements of land use planning", "career": "Pathway 1 – Planning for healthy environments"},
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Design and Technology A", "programme": "Use research and exploration, such as the study of different cultures, to identify and understand user needs (KS3)", "rationale": "Understanding user needs from diverse cultures supports sustainable development planning", "career": "Pathway 1 – Planning for healthy environments"},
+            {"plo_id": "PLO 1", "plo_name": "Understand Planning", "subject": "Design and Technology A", "programme": "understand developments in design and technology, its impact on individuals, society and the environment, and the responsibilities of designers, engineers and technologists (KS3)", "rationale": "Understanding societal and environmental impacts is key to sustainable development", "career": "Pathway 1 – Planning for healthy environments"},
+            
+            {"plo_id": "PLO 2", "plo_name": "Global and Local Change", "subject": "Science", "programme": "Earth as a source of limited resources and the efficacy of recycling; the production of carbon dioxide by human activity and the impact on the climate; fuels and energy resources (KS3)", "rationale": "Climate change, resources, and environmental challenges represent key global/local issues", "career": "Pathway 2 - Biodiversity and energy management"},
+            {"plo_id": "PLO 2", "plo_name": "Global and Local Change", "subject": "Science", "programme": "Explaining everyday and technological applications of science; evaluating associated personal, social, economic and environmental implications; level of organisation within an ecosystem; life cycle assessment and recycling (KS4)", "rationale": "Evaluating environmental implications and ecosystem thinking supports responding to global challenges", "career": "Pathway 2 - Biodiversity and energy management"},
+            {"plo_id": "PLO 2", "plo_name": "Global and Local Change", "subject": "Environmental Science", "programme": "Demonstrate knowledge and understanding of scientific ideas, processes, techniques and procedures, including in relation to natural processes/systems and environmental issues (AO1)", "rationale": "Environmental systems knowledge is fundamental to understanding global and local change", "career": "Pathway 2 - Biodiversity and energy management"},
+            {"plo_id": "PLO 2", "plo_name": "Global and Local Change", "subject": "Environmental Science", "programme": "Apply knowledge and understanding of scientific ideas, processes, techniques and procedures, including in relation to natural processes/systems and environmental issues AO2", "rationale": "Applying environmental knowledge enables response to change challenges", "career": "Pathway 2 - Biodiversity and energy management"},
+            {"plo_id": "PLO 2", "plo_name": "Global and Local Change", "subject": "Environmental Science", "programme": "Analyse, interpret and evaluate scientific information, ideas and evidence, including in relation to environmental issues, to make judgements and draw conclusions. AO3", "rationale": "Critical evaluation of environmental evidence supports critical thinking about global/local challenges", "career": "Pathway 2 - Biodiversity and energy management"},
+            
+            {"plo_id": "PLO 3", "plo_name": "Systems thinking", "subject": "Geography A", "programme": "Human geography relating to: population and urbanisation (KS3)", "rationale": "Urbanisation requires systems thinking across spatial scales", "career": "Pathways 3 – Planning for connected urban/rural communities"},
+            {"plo_id": "PLO 3", "plo_name": "Systems thinking", "subject": "Geography A", "programme": "Understand, through the use of detailed place-based exemplars at a variety of scales (physical and human geography); interpret Ordnance Survey maps in the classroom and the field, including using grid references and scale (KS3)", "rationale": "Working at multiple spatial scales is core to systems thinking", "career": "Pathways 3 – Planning for connected urban/rural communities"},
+            {"plo_id": "PLO 3", "plo_name": "Systems thinking", "subject": "Science", "programme": "Present observation and data using appropriate methods, including tables and graphs; interdependence of organisms in an ecosystem (KS3)", "rationale": "Understanding ecosystem interdependence demonstrates systems thinking", "career": "Pathways 3 – Planning for connected urban/rural communities"},
+            {"plo_id": "PLO 3", "plo_name": "Systems thinking", "subject": "Geography B", "programme": "Demonstrate knowledge and understanding of places, environments, concepts, processes, interactions and change, at a variety of scales (AO1)", "rationale": "Understanding interactions and processes at multiple scales is systems thinking", "career": "Pathways 3 – Planning for connected urban/rural communities"},
+            
+            {"plo_id": "PLO 4", "plo_name": "Inequality and Positive Change", "subject": "Citizenship", "programme": "The different ways in which a citizen can contribute to the improvement of his or her community, to include the opportunity to participate actively in community volunteering, as well as other forms of responsible activity (KS4)", "rationale": "Community improvement directly addresses social inequalities", "career": "Pathway 4 – Urban regeneration and masterplanning"},
+            {"plo_id": "PLO 4", "plo_name": "Inequality and Positive Change", "subject": "Citizenship", "programme": "Diverse national, regional, religious and ethnic identities in the United Kingdom and the need for mutual respect and understanding (KS4)", "rationale": "Understanding diversity and promoting respect addresses social and political inequalities", "career": "Pathway 4 – Urban regeneration and masterplanning"},
+            {"plo_id": "PLO 4", "plo_name": "Inequality and Positive Change", "subject": "Economics", "programme": "Demonstrate knowledge of terms/concepts and theories/models to show an understanding of the behaviour of economic agents and how they are affected by and respond to economic issues (AO1)", "rationale": "Understanding economic inequalities and responses to economic issues", "career": "Pathway 4 – Urban regeneration and masterplanning"},
+            {"plo_id": "PLO 4", "plo_name": "Inequality and Positive Change", "subject": "History", "programme": "Demonstrate, organise and communicate knowledge and understanding to analyse and evaluate the key features related to the periods studied, making substantiated judgements and exploring concepts, as relevant, of cause, consequence, change, continuity, similarity, difference and significance AO1", "rationale": "Understanding historical patterns of inequality and change supports addressing current inequalities", "career": "Pathway 4 – Urban regeneration and masterplanning"},
+            
+            {"plo_id": "PLO 5", "plo_name": "Risk Management", "subject": "Citizenship", "programme": "The functions and uses of money, the importance and practice of budgeting, and managing risk. (KS3)", "rationale": "Direct teaching of risk management and financial viability", "career": "Pathway 5 – Protecting our historic places"},
+            {"plo_id": "PLO 5", "plo_name": "Risk Management", "subject": "Science", "programme": "Earth as a source of limited resources and the efficacy of recycling; the production of carbon dioxide by human activity and the impact on the climate; fuels and energy resources (KS3)", "rationale": "Understanding environmental risks and resource limitations", "career": "Pathway 5 – Protecting our historic places"},
+            {"plo_id": "PLO 5", "plo_name": "Risk Management", "subject": "Science", "programme": "Explaining everyday and technological applications of science; evaluating associated personal, social, economic and environmental implications; level of organisation within an ecosystem; life cycle assessment and recycling (KS4)", "rationale": "Evaluating economic and environmental implications relates to risk assessment", "career": "Pathway 5 – Protecting our historic places"},
+            {"plo_id": "PLO 5", "plo_name": "Risk Management", "subject": "Economics", "programme": "Demonstrate knowledge of terms/concepts and theories/models to show an understanding of the behaviour of economic agents and how they are affected by and respond to economic issues (AO1)", "rationale": "Understanding economic risks and agent responses", "career": "Pathway 5 – Protecting our historic places"},
+            {"plo_id": "PLO 5", "plo_name": "Risk Management", "subject": "Economics", "programme": "Evaluate economic arguments and use qualitative and quantitative evidence to support informed judgements relating to economic issues AO4", "rationale": "Evaluating economic evidence supports risk assessment and balancing agendas", "career": "Pathway 5 – Protecting our historic places"},
+            
+            {"plo_id": "PLO 6", "plo_name": "Legal and Institutional Frameworks", "subject": "Citizenship", "programme": "The legal system in the UK, different sources of law and how the law helps society deal with complex problems (KS4)", "rationale": "Understanding legal systems is fundamental to planning in legal contexts", "career": "Pathways 6 – Project management"},
+            {"plo_id": "PLO 6", "plo_name": "Legal and Institutional Frameworks", "subject": "Citizenship", "programme": "Understanding of system of democratic government, role of citizens in cities, skills to think critically and debate political questions (KS3)", "rationale": "Understanding institutional frameworks of government", "career": "Pathways 6 – Project management"},
+            {"plo_id": "PLO 6", "plo_name": "Legal and Institutional Frameworks", "subject": "Politics", "programme": "Demonstrate knowledge and understanding of political institutions, processes, concepts, theories and issues AO1", "rationale": "Understanding political institutions and processes relates to institutional frameworks", "career": "Pathways 6 – Project management"},
+            {"plo_id": "PLO 6", "plo_name": "Legal and Institutional Frameworks", "subject": "Politics", "programme": "Analyse aspects of politics and political information, including in relation to parallels, connections, similarities and differences AO2", "rationale": "Analysing political and institutional information supports data analysis skills", "career": "Pathways 6 – Project management"},
+            {"plo_id": "PLO 6", "plo_name": "Legal and Institutional Frameworks", "subject": "Politics", "programme": "Evaluate aspects of politics and political information, including to construct arguments, make substantiated judgements and draw conclusions", "rationale": "Evaluating institutional information and constructing arguments", "career": "Pathways 6 – Project management"},
+            
+            {"plo_id": "PLO 7", "plo_name": "Community Engagement", "subject": "Citizenship", "programme": "The different ways in which a citizen can contribute to the improvement of his or her community, to include the opportunity to participate actively in community volunteering, as well as other forms of responsible activity (KS4)", "rationale": "Direct experience with community participation and volunteering", "career": "Pathway 7 – Engaged communities, changing places"},
+            {"plo_id": "PLO 7", "plo_name": "Community Engagement", "subject": "Citizenship", "programme": "Diverse national, regional, religious and ethnic identities in the United Kingdom and the need for mutual respect and understanding (KS4)", "rationale": "Engaging with diverse communities requires understanding diversity", "career": "Pathway 7 – Engaged communities, changing places"},
+            {"plo_id": "PLO 7", "plo_name": "Community Engagement", "subject": "English", "programme": "Identifying and interpreting themes, seeking evidence in the text to support a point of view, making critical comparisons, work effectively in groups and taking on different roles, listening to and building on the contributions of others (KS4)", "rationale": "Working in groups and building on others contributions is key to community engagement", "career": "Pathway 7 – Engaged communities, changing places"},
+            {"plo_id": "PLO 7", "plo_name": "Community Engagement", "subject": "Design and Technology A", "programme": "Use research and exploration, such as the study of different cultures, to identify and understand user needs (KS3)", "rationale": "Understanding diverse cultural needs supports community engagement", "career": "Pathway 7 – Engaged communities, changing places"},
+            
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Geography A", "programme": "Use fieldwork in contrasting locations to collect, analyse and draw conclusions from geographical data, using multiple sources of increasingly complex information (KS3)", "rationale": "Fieldwork and data analysis from multiple sources builds research skills", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Geography A", "programme": "Use Geographical Information Systems (GIS) to view, analyse and interpret places and data (KS3)", "rationale": "GIS skills are digital tools for spatial analysis", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Science", "programme": "Develop understanding of the nature, processes and methods of science, through different types of scientific enquiry that help them to answer scientific questions about the world around them (KS4)", "rationale": "Scientific enquiry methods develop evidence judgment skills", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Science", "programme": "Present observation and data using appropriate methods, including tables and graphs; interdependence of organisms in an ecosystem (KS3)", "rationale": "Data presentation skills support evidence-based research", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Computing", "programme": "Undertake creative projects that involve selecting, using, and combining multiple applications (KS3)", "rationale": "Digital tool proficiency across multiple applications", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Computing", "programme": "Develop their capability, creativity and knowledge in computer science, digital media and information technology; develop and apply their analytic, problem-solving, design (KS4)", "rationale": "Analytical and problem-solving with digital tools", "career": "Pathway 8 – Smart cities and open data"},
+            {"plo_id": "PLO 8", "plo_name": "Evidence and Research", "subject": "Geography B", "programme": "Use a variety of relevant quantitative, qualitative and fieldwork skills to: investigate geographical questions and issues; interpret, analyse and evaluate data and evidence; construct arguments and draw conclusions (AO3)", "rationale": "Multiple research methods and evidence evaluation skills", "career": "Pathway 8 – Smart cities and open data"},
+            
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Art and Design", "programme": "To use a range of techniques to record their observations in sketchbooks, journals and other media as a basis for exploring their ideas; to analyse and evaluate their own work, and that of others (KS3)", "rationale": "Design observation, evaluation and aesthetic judgment", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology A", "programme": "Use research and exploration, such as the study of different cultures, to identify and understand user needs (KS3)", "rationale": "Design research considering diverse user needs", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology A", "programme": "Develop and communicate design ideas using annotated sketches, detailed plans, 3-D and mathematical modelling, oral and digital presentations and computer-based tools", "rationale": "Design communication using multiple visual and digital methods", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology A", "programme": "investigate new and emerging technologies (KS3)", "rationale": "Innovation in design through emerging technologies", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology A", "programme": "understand developments in design and technology, its impact on individuals, society and the environment, and the responsibilities of designers, engineers and technologists (KS3)", "rationale": "Understanding long-term impacts of design on people and planet", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Mathematics", "programme": "Construct and interpret plans and elevations of 3D shapes (KS4)", "rationale": "Technical skills for spatial design and place-making", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Mathematics", "programme": "Use language and properties to analyse numbers, 2D and 3D shapes; to use scale factors, scale diagrams and maps; interpreting scale diagrams; to describe, sketch and draw using conventional terms and notations (KS3)", "rationale": "Scale, spatial representation vital for design work", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology B", "programme": "Analyse and evaluate design decisions and outcomes, including for prototypes made by themselves and others (AO3)", "rationale": "Critical evaluation of design quality", "career": "Pathway 9 – Designing high quality places"},
+            {"plo_id": "PLO 9", "plo_name": "Design and Aesthetics", "subject": "Design and Technology B", "programme": "Design and make prototypes that are fit for purpose AO2", "rationale": "Creating functional, high-quality designs", "career": "Pathway 9 – Designing high quality places"},
+            
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "English", "programme": "Identifying and interpreting themes, seeking evidence in the text to support a point of view, making critical comparisons, work effectively in groups and taking on different roles, listening to and building on the contributions of others (KS4)", "rationale": "Communication, teamwork and leadership through group work", "career": "Pathway 10 – Reflective practitioner"},
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "English", "programme": "To learn new vocabulary, to understand nuances in meaning; make critical comparisons across texts, summarising and organising material, give short speeches and presentations (KS3)", "rationale": "Communication skills through presentations and written work", "career": "Pathway 10 – Reflective practitioner"},
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "Business Studies", "programme": "Apply knowledge and understanding to various business contexts to show how individuals and organisations are affected by and respond to issues AO2", "rationale": "Professional business context awareness", "career": "Pathway 10 – Reflective practitioner"},
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "Philosophy", "programme": "Demonstrate knowledge and understanding of the core concepts and methods of philosophy, including through the use of philosophical analysis AO1", "rationale": "Ethical reasoning and analytical thinking", "career": "Pathway 10 – Reflective practitioner"},
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "Philosophy", "programme": "Analyse and evaluate philosophical arguments to form reasoned judgements AO2", "rationale": "Ethical judgment and professional reasoning", "career": "Pathway 10 – Reflective practitioner"},
+            {"plo_id": "PLO 10", "plo_name": "Professional Competencies and Standards", "subject": "Psychology", "programme": "Demonstrate knowledge and understanding of scientific ideas, processes, techniques and procedures AO1", "rationale": "Understanding human behavior for professional practice", "career": "Pathway 10 – Reflective practitioner"}
+        ];
+
+        let filteredData = [...mappingsData];
+
+        function renderMappings() {
+            const container = document.getElementById('mappingsContainer');
+            container.innerHTML = '';
+            
+            const subjectFilter = document.getElementById('filterSubject').value;
+            const careerFilter = document.getElementById('filterCareer').value;
+            
+            if (!subjectFilter && !careerFilter) {
+                container.innerHTML = `
+                    <div class="no-results start-prompt">
+                        <div class="no-results-icon">👆</div>
+                        <h2>Choose a school subject or career pathway</h2>
+                        <p>Select an option from the filters above to see how it connects to the BSc Urban Planning programme.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (filteredData.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-icon">🔍</div>
+                        <h2>No mappings found</h2>
+                        <p>Try adjusting your filters</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            filteredData.forEach((mapping, index) => {
+                const card = document.createElement('div');
+                card.className = 'mapping-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div style="flex: 1;">
+                            <div class="plo-badge">${mapping.plo_id}</div>
+                            <div class="plo-title">${mapping.plo_name}</div>
+                        </div>
+                        <span class="expand-icon" onclick="toggleCard(${index})">▼</span>
+                    </div>
+                    <div class="subject-badge">📚 ${mapping.subject}</div>
+                    <div class="card-details" id="details-${index}">
+                        <div class="section-title">Programme of Study</div>
+                        <div class="programme-text">${mapping.programme}</div>
+                        
+                        <div class="section-title">Connection to Urban Planning</div>
+                        <div class="rationale-text">💡 ${mapping.rationale}</div>
+                        
+                        <div class="section-title">Career Pathway</div>
+                        <div class="career-badge">🎯 ${mapping.career}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleCard(index) {
+            const details = document.getElementById(`details-${index}`);
+            const cards = document.querySelectorAll('.mapping-card');
+            const icon = cards[index].querySelector('.expand-icon');
+            
+            details.classList.toggle('expanded');
+            icon.classList.toggle('expanded');
+        }
+
+        // ---------- Connection Wheel ----------
+        const SUBJECT_ORDER = ["Citizenship","Geography A","Geography B","Science","Design and Technology A","Design and Technology B","Economics","Environmental Science","Politics","English","Computing","Art and Design","Mathematics","Business Studies","Philosophy","History","Psychology"];
+        const SUBJECT_SHORT = {
+            "Citizenship":"Citizenship","Geography A":"Geog A","Geography B":"Geog B","Science":"Science",
+            "Design and Technology A":"D&T A","Design and Technology B":"D&T B","Economics":"Economics",
+            "Environmental Science":"Env Sci","Politics":"Politics","English":"English","Computing":"Computing",
+            "Art and Design":"Art & Design","Mathematics":"Maths","Business Studies":"Business","Philosophy":"Philosophy",
+            "History":"History","Psychology":"Psychology"
+        };
+        const PLO_ORDER = ["PLO 1","PLO 2","PLO 3","PLO 4","PLO 5","PLO 6","PLO 7","PLO 8","PLO 9","PLO 10"];
+
+        // Relationship maps built from the data
+        const ploToSubjects = {}, subjectToPlos = {}, ploName = {};
+        mappingsData.forEach(m => {
+            ploName[m.plo_id] = m.plo_name;
+            (ploToSubjects[m.plo_id] = ploToSubjects[m.plo_id] || new Set()).add(m.subject);
+            (subjectToPlos[m.subject] = subjectToPlos[m.subject] || new Set()).add(m.plo_id);
+        });
+
+        const WHEEL = { cx: 340, cy: 340,
+            plo: { rOuter: 320, rInner: 280 },
+            sub: { rOuter: 240, rInner: 176 },
+            pad: 1.4 };
+        const WHEEL_COLORS = { plo: '#7b6fd0', sub: '#4a90d9', gold: '#f0a500', ploSel: '#4b3fae', subSel: '#1560b0' };
+        const SVGNS = 'http://www.w3.org/2000/svg';
+        let wheelSelection = null;
+
+        function polarPt(r, angleDeg) {
+            const a = (angleDeg - 90) * Math.PI / 180;
+            return [WHEEL.cx + r * Math.cos(a), WHEEL.cy + r * Math.sin(a)];
+        }
+        function arcPath(rInner, rOuter, a0, a1) {
+            const [x1o, y1o] = polarPt(rOuter, a0), [x2o, y2o] = polarPt(rOuter, a1);
+            const [x2i, y2i] = polarPt(rInner, a1), [x1i, y1i] = polarPt(rInner, a0);
+            const large = (a1 - a0) > 180 ? 1 : 0;
+            return `M ${x1o} ${y1o} A ${rOuter} ${rOuter} 0 ${large} 1 ${x2o} ${y2o} L ${x2i} ${y2i} A ${rInner} ${rInner} 0 ${large} 0 ${x1i} ${y1i} Z`;
+        }
+        function svgEl(tag, attrs) {
+            const el = document.createElementNS(SVGNS, tag);
+            for (const k in attrs) el.setAttribute(k, attrs[k]);
+            return el;
+        }
+        function truncate(s, n) { return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+        function buildRing(order, ring, type, shortMap) {
+            const layerArcs = document.getElementById('layerArcs');
+            const layerLabels = document.getElementById('layerLabels');
+            const seg = 360 / order.length;
+            order.forEach((id, i) => {
+                const a0 = i * seg + WHEEL.pad / 2;
+                const a1 = (i + 1) * seg - WHEEL.pad / 2;
+                const path = svgEl('path', {
+                    d: arcPath(ring.rInner, ring.rOuter, a0, a1),
+                    class: 'wheel-seg', fill: WHEEL_COLORS[type === 'plo' ? 'plo' : 'sub'],
+                    stroke: '#fff', 'stroke-width': '2', 'data-type': type, 'data-id': id
+                });
+                const title = svgEl('title', {});
+                title.textContent = type === 'plo' ? (id + ' – ' + ploName[id]) : id;
+                path.appendChild(title);
+                path.addEventListener('click', (e) => { e.stopPropagation(); selectWheel(type, id); });
+                layerArcs.appendChild(path);
+
+                const mid = (a0 + a1) / 2;
+                const [lx, ly] = polarPt((ring.rInner + ring.rOuter) / 2, mid);
+                let rot = mid; if (mid > 90 && mid < 270) rot += 180;
+                const t = svgEl('text', {
+                    x: lx, y: ly, class: 'wheel-label' + (type === 'plo' ? ' plo' : ''),
+                    'text-anchor': 'middle', 'dominant-baseline': 'central',
+                    transform: `rotate(${rot} ${lx} ${ly})`, 'data-type': type, 'data-id': id
+                });
+                t.textContent = shortMap ? (shortMap[id] || id) : id;
+                layerLabels.appendChild(t);
+            });
+        }
+
+        function renderVisual() {
+            const svg = document.getElementById('wheelSvg');
+            svg.innerHTML = '';
+            wheelSelection = null;
+
+            const layerArcs = svgEl('g', { id: 'layerArcs' });
+            const layerLines = svgEl('g', { id: 'layerLines' });
+            const layerLabels = svgEl('g', { id: 'layerLabels' });
+            svg.appendChild(layerArcs);
+            svg.appendChild(layerLines);
+            svg.appendChild(layerLabels);
+
+            buildRing(PLO_ORDER, WHEEL.plo, 'plo', null);
+            buildRing(SUBJECT_ORDER, WHEEL.sub, 'subject', SUBJECT_SHORT);
+
+            // Clickable centre (clears selection)
+            const centre = svgEl('circle', { cx: WHEEL.cx, cy: WHEEL.cy, r: WHEEL.sub.rInner - 4, fill: '#ffffff', style: 'cursor:pointer' });
+            centre.addEventListener('click', (e) => { e.stopPropagation(); clearWheel(); });
+            layerArcs.appendChild(centre);
+
+            // Centre text
+            layerLabels.appendChild(svgEl('text', { id: 'wheelCentreMain', x: WHEEL.cx, y: WHEEL.cy - 6, class: 'wheel-center-text', 'font-size': '20' }));
+            layerLabels.appendChild(svgEl('text', { id: 'wheelCentreSub', x: WHEEL.cx, y: WHEEL.cy + 18, class: 'wheel-center-sub', 'font-size': '12' }));
+
+            svg.addEventListener('click', () => clearWheel());
+            populateWheelSelect();
+            clearWheel();
+            applyWheelZoom();
+        }
+
+        function selectWheel(type, id) {
+            if (wheelSelection && wheelSelection.type === type && wheelSelection.id === id) { clearWheel(); return; }
+            wheelSelection = { type, id };
+            applyWheelHighlight();
+        }
+        function clearWheel() {
+            wheelSelection = null;
+            applyWheelHighlight();
+        }
+
+        function applyWheelHighlight() {
+            const svg = document.getElementById('wheelSvg');
+            document.getElementById('layerLines').innerHTML = '';
+            const segs = svg.querySelectorAll('.wheel-seg');
+            const labels = svg.querySelectorAll('.wheel-label');
+            const main = document.getElementById('wheelCentreMain');
+            const sub = document.getElementById('wheelCentreSub');
+            const jump = document.getElementById('wheelSelect');
+
+            if (!wheelSelection) {
+                segs.forEach(s => { s.classList.remove('seg-dim'); resetSegFill(s); });
+                labels.forEach(l => l.classList.remove('label-dim'));
+                main.textContent = 'Explore';
+                sub.textContent = 'click a segment';
+                if (jump) jump.value = '';
+                renderWheelInfo(null);
+                return;
+            }
+
+            const { type, id } = wheelSelection;
+            const connected = type === 'plo' ? ploToSubjects[id] : subjectToPlos[id];
+            const otherType = type === 'plo' ? 'subject' : 'plo';
+
+            segs.forEach(s => {
+                const st = s.getAttribute('data-type'), sid = s.getAttribute('data-id');
+                if (st === type && sid === id) {
+                    s.classList.remove('seg-dim');
+                    s.setAttribute('fill', type === 'plo' ? WHEEL_COLORS.ploSel : WHEEL_COLORS.subSel);
+                } else if (st === otherType && connected && connected.has(sid)) {
+                    s.classList.remove('seg-dim');
+                    s.setAttribute('fill', WHEEL_COLORS.gold);
+                } else {
+                    s.classList.add('seg-dim');
+                    resetSegFill(s);
+                }
+            });
+            labels.forEach(l => {
+                const lt = l.getAttribute('data-type'), lid = l.getAttribute('data-id');
+                const keep = (lt === type && lid === id) || (lt === otherType && connected && connected.has(lid));
+                l.classList.toggle('label-dim', !keep);
+            });
+
+            drawWheelLines(type, id, connected);
+
+            if (type === 'plo') { main.textContent = id; sub.textContent = truncate(ploName[id], 22); }
+            else { main.textContent = SUBJECT_SHORT[id] || id; sub.textContent = 'subject'; }
+
+            if (jump) jump.value = type + ':' + id;
+            renderWheelInfo(wheelSelection);
+        }
+
+        function resetSegFill(s) {
+            s.setAttribute('fill', s.getAttribute('data-type') === 'plo' ? WHEEL_COLORS.plo : WHEEL_COLORS.sub);
+        }
+
+        function drawWheelLines(type, id, connected) {
+            if (!connected) return;
+            const layer = document.getElementById('layerLines');
+            const selIdx = (type === 'plo' ? PLO_ORDER : SUBJECT_ORDER).indexOf(id);
+            const selSeg = 360 / (type === 'plo' ? PLO_ORDER.length : SUBJECT_ORDER.length);
+            const selMid = selIdx * selSeg + selSeg / 2;
+            const selR = type === 'plo' ? WHEEL.plo.rInner : WHEEL.sub.rOuter;
+            const [sx, sy] = polarPt(selR, selMid);
+            const otherOrder = type === 'plo' ? SUBJECT_ORDER : PLO_ORDER;
+            const otherSeg = 360 / otherOrder.length;
+            const otherR = type === 'plo' ? WHEEL.sub.rOuter : WHEEL.plo.rInner;
+            connected.forEach(cid => {
+                const cIdx = otherOrder.indexOf(cid);
+                if (cIdx < 0) return;
+                const cMid = cIdx * otherSeg + otherSeg / 2;
+                const [cx, cy] = polarPt(otherR, cMid);
+                const mx = (sx + cx) / 2, my = (sy + cy) / 2;
+                const qx = WHEEL.cx + (mx - WHEEL.cx) * 0.55;
+                const qy = WHEEL.cy + (my - WHEEL.cy) * 0.55;
+                layer.appendChild(svgEl('path', { d: `M ${sx} ${sy} Q ${qx} ${qy} ${cx} ${cy}`, class: 'wheel-line' }));
+            });
+        }
+
+        function renderWheelInfo(sel) {
+            const info = document.getElementById('wheelInfo');
+            if (!sel) {
+                info.innerHTML = `<p class="wi-hint">Select a subject (inner ring) or a learning outcome (outer ring) to see its connections.</p>`;
+                return;
+            }
+            if (sel.type === 'plo') {
+                const subs = Array.from(ploToSubjects[sel.id] || []).sort();
+                info.innerHTML = `<div class="wi-title">${sel.id} – ${ploName[sel.id]} connects to ${subs.length} school subject${subs.length !== 1 ? 's' : ''}:</div>
+                    <div class="chips">${subs.map(s => `<span class="chip chip-subject">📚 ${s}</span>`).join('')}</div>`;
+            } else {
+                const plos = Array.from(subjectToPlos[sel.id] || []).sort((a, b) => parseInt(a.split(' ')[1]) - parseInt(b.split(' ')[1]));
+                info.innerHTML = `<div class="wi-title">${sel.id} supports ${plos.length} learning outcome${plos.length !== 1 ? 's' : ''}:</div>
+                    <div class="chips">${plos.map(p => `<span class="chip chip-plo">🎯 ${p} – ${ploName[p]}</span>`).join('')}</div>`;
+            }
+        }
+
+        // Wheel: jump dropdown + zoom controls
+        function populateWheelSelect() {
+            const sel = document.getElementById('wheelSelect');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">Choose…</option>';
+            const gP = document.createElement('optgroup');
+            gP.label = 'Programme Learning Outcomes';
+            PLO_ORDER.forEach(p => {
+                const o = document.createElement('option');
+                o.value = 'plo:' + p;
+                o.textContent = p + ' – ' + ploName[p];
+                gP.appendChild(o);
+            });
+            const gS = document.createElement('optgroup');
+            gS.label = 'School Subjects';
+            SUBJECT_ORDER.forEach(s => {
+                const o = document.createElement('option');
+                o.value = 'subject:' + s;
+                o.textContent = s;
+                gS.appendChild(o);
+            });
+            sel.appendChild(gP);
+            sel.appendChild(gS);
+        }
+
+        function wheelSelectChange(val) {
+            if (!val) { clearWheel(); return; }
+            const i = val.indexOf(':');
+            selectWheel(val.slice(0, i), val.slice(i + 1));
+        }
+
+        let wheelZoom = 1;
+        function applyWheelZoom() {
+            const svg = document.getElementById('wheelSvg');
+            if (!svg) return;
+            const w = 680 / wheelZoom, h = 680 / wheelZoom;
+            const x = 340 - w / 2, y = 340 - h / 2;
+            svg.setAttribute('viewBox', `${x} ${y} ${w} ${h}`);
+            const lbl = document.getElementById('zoomLabel');
+            if (lbl) lbl.textContent = Math.round(wheelZoom * 100) + '%';
+        }
+        function zoomIn() { wheelZoom = Math.min(3, +(wheelZoom * 1.2).toFixed(3)); applyWheelZoom(); }
+        function zoomOut() { wheelZoom = Math.max(0.6, +(wheelZoom / 1.2).toFixed(3)); applyWheelZoom(); }
+        function zoomReset() { wheelZoom = 1; applyWheelZoom(); }
+
+        function applyFilters() {
+            const subjectFilter = document.getElementById('filterSubject').value;
+            const careerFilter = document.getElementById('filterCareer').value;
+            
+            filteredData = mappingsData.filter(mapping => {
+                const matchesSubject = !subjectFilter || mapping.subject === subjectFilter;
+                const matchesCareer = !careerFilter || mapping.career === careerFilter;
+                
+                return matchesSubject && matchesCareer;
+            });
+            
+            renderMappings();
+            updateResultsCount();
+        }
+
+        function updateResultsCount() {
+            const subjectFilter = document.getElementById('filterSubject').value;
+            const careerFilter = document.getElementById('filterCareer').value;
+            const count = filteredData.length;
+            const total = mappingsData.length;
+            const countEl = document.getElementById('resultsCount');
+            
+            if (!subjectFilter && !careerFilter) {
+                countEl.style.display = 'none';
+                return;
+            }
+            
+            countEl.style.display = 'block';
+            countEl.textContent = count === total ? 
+                `Showing all ${total} mappings` : 
+                `Showing ${count} of ${total} mappings`;
+        }
+
+        function resetFilters() {
+            document.getElementById('filterSubject').value = '';
+            document.getElementById('filterCareer').value = '';
+            applyFilters();
+        }
+
+        function switchView(view) {
+            const cardsView = document.getElementById('cardsView');
+            const visualView = document.getElementById('visualView');
+            const buttons = document.querySelectorAll('.toggle-btn');
+            
+            if (view === 'cards') {
+                cardsView.style.display = 'block';
+                visualView.style.display = 'none';
+                buttons[0].classList.add('active');
+                buttons[1].classList.remove('active');
+            } else {
+                cardsView.style.display = 'none';
+                visualView.style.display = 'block';
+                buttons[0].classList.remove('active');
+                buttons[1].classList.add('active');
+                renderVisual();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('filterSubject').addEventListener('change', applyFilters);
+        document.getElementById('filterCareer').addEventListener('change', applyFilters);
+
+        // Initial render
+        renderMappings();
+        updateResultsCount();
+    </script>
+</body>
+</html>
